@@ -1,5 +1,5 @@
+// Import relevant libraries
 #include <Adafruit_MotorShield.h>
-
 #include "Arduino.h"
 #include "Wire.h"
 #include "DFRobot_VL53L0X.h"
@@ -13,11 +13,12 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *myMotorL = AFMS.getMotor(1);
 Adafruit_DCMotor *myMotorR = AFMS.getMotor(2);
 
+
+// Define all relevant variables
 int USsensor = A0;
-int LineM = 1;
-int LineR = 1;
-int LineL = 1;
-int LineF = 1;
+int LineM = 4;
+int LineR = 7;
+int LineL = 8;
 int StartButton = 1;
 int LEDG = 1;
 int LEDB = 1;
@@ -36,21 +37,22 @@ void setup() {
     while (1);
   }
 }
-  // speed = speed
-  // WaDist = distance to the wall in front
-  //BlDist = distance to the block in front
-  //USsens = the output of the ultra sonic sensor
-  // TOFsens = output of the Time Of Flight sensor
+// speed = speed
+// WaDist = distance to the wall in front
+//BlDist = distance to the block in front
+//USsens = the output of the ultra sonic sensor
+// TOFsens = output of the Time Of Flight sensor
 float speed, WaDist, BlDist, USsens, TOFsens;
 int x;
 
+// Go to the junction of START, facing north (from the very intial starting position)
 void GoToWJunc() {
   while (1) {
 
     myMotorR->run(FORWARD);
     myMotorL->run(FORWARD);
-    myMotorR->setSpeed(140);
-    myMotorL->setSpeed(140);
+    myMotorR->setSpeed(160);
+    myMotorL->setSpeed(160);
 
     
     if (digitalRead(LineM) == HIGH) { // this statement checks to see if a junction has been reached - then stops it and ends while loop.
@@ -61,11 +63,34 @@ void GoToWJunc() {
   }
 }
 
-void LineFollow() {
+// Rotate 180 degrees
+void Rotate180() {
+  myMotorR->run(FORWARD);       // rotating the robot in place, slowly, as to not lose the cube
+  myMotorL->run(BACKWARD);
+  myMotorR->setSpeed(160);
+  myMotorL->setSpeed(160);
+  delay(3000);                  // this delay will need to be worked out until roughly 180* is achieved
+  myMotorR->setSpeed(0);
+  myMotorL->setSpeed(0);
+}
+
+// Go to white junction to center of the START, pointing south
+void GoToCentW() {
+  myMotorR->run(FORWARD);
+  myMotorL->run(FORWARD);
+  myMotorR->setSpeed(160);
+  myMotorL->setSpeed(160);
+  delay(1000);
+  myMotorR->setSpeed(0);
+  myMotorL->setSpeed(0);                                      // robot now in center of white area
+}
+
+// Follow the line
+void LineFollow() { 
   while (1) {
 
     if (digitalRead(LineM) == HIGH && digitalRead(LineL) == LOW && digitalRead(LineR) == LOW) { // is the robot on the line
-      speed = 110;
+      speed = 170;
       myMotorR->run(FORWARD);
       myMotorL->run(FORWARD);
       myMotorR->setSpeed(speed);
@@ -74,14 +99,14 @@ void LineFollow() {
     if (digitalRead(LineM) == LOW && digitalRead(LineL) == HIGH && digitalRead(LineR) == LOW) { // has the robot drifted to the left
       myMotorR->run(FORWARD);
       myMotorL->run(FORWARD);
-      myMotorR->setSpeed(120);
-      myMotorL->setSpeed(100);
+      myMotorR->setSpeed(180);
+      myMotorL->setSpeed(160);
     }
     if (digitalRead(LineM) == LOW && digitalRead(LineL) == LOW && digitalRead(LineR) == HIGH) { // has the robot drifted to the right
       myMotorR->run(FORWARD);
       myMotorL->run(FORWARD);
-      myMotorR->setSpeed(100);
-      myMotorL->setSpeed(120);
+      myMotorR->setSpeed(160);
+      myMotorL->setSpeed(180);
     }
     if (digitalRead(LineM) == HIGH && (digitalRead(LineL) == HIGH || digitalRead(LineR) == HIGH)) { // this statement checks to see if a junction has been reached - then stops it and ends while loop.
       myMotorR->setSpeed(0);
@@ -91,22 +116,24 @@ void LineFollow() {
   }
 }
 
-void InitialMovement() {
+// Setting up initial features of the robot
+void InitialMovement() { 
   myMotorR->run(FORWARD);
   myMotorL->run(FORWARD);
-  myMotorR->setSpeed(100);
-  myMotorL->setSpeed(100);    //  all this bit of code does is make sure the robot is slightly off the junction before resuming to line following code.
-  delay(200);
+  myMotorR->setSpeed(160);
+  myMotorL->setSpeed(160);    //  all this bit of code does is make sure the robot is slightly off the junction before resuming to line following code.
+  delay(500);
   myMotorR->setSpeed(0);
   myMotorL->setSpeed(0);
 }
 
-void GoToRed() {
+// Go to red from the centre of START when facing south
+void GoToRed() { 
   //Take back to Red
       myMotorR->run(BACKWARD);       // rotating the robot in place, slowly, as to not lose the cube
       myMotorL->run(FORWARD);
-      myMotorR->setSpeed(80);
-      myMotorL->setSpeed(80);
+      myMotorR->setSpeed(160);
+      myMotorL->setSpeed(160);
       delay(1500);                  // this delay will need to be worked out until roughly 90* is achieved
       myMotorR->setSpeed(0);
       myMotorL->setSpeed(0);
@@ -115,9 +142,9 @@ void GoToRed() {
 
       myMotorR->run(FORWARD);
       myMotorL->run(FORWARD);           // travel forwards to red area
-      myMotorR->setSpeed(100);
-      myMotorL->setSpeed(100);
-      delay(10000);                           // change delay to work out best distance
+      myMotorR->setSpeed(180);
+      myMotorL->setSpeed(180);
+      delay(3000);                           // change delay to work out best distance
       myMotorR->setSpeed(0);
       myMotorL->setSpeed(0);                                      // robot now in center of red area  ------ hopefully...
 
@@ -125,9 +152,9 @@ void GoToRed() {
 
       myMotorR->run(BACKWARD);
       myMotorL->run(BACKWARD);
-      myMotorR->setSpeed(100);
-      myMotorL->setSpeed(100);
-      delay(10000);                           // change delay to work out best distance
+      myMotorR->setSpeed(180);
+      myMotorL->setSpeed(180);
+      delay(3000);                           // change delay to work out best distance
       myMotorR->setSpeed(0);
       myMotorL->setSpeed(0);                                      // robot now in center of white area  ------ hopefully...
 
@@ -135,8 +162,8 @@ void GoToRed() {
 
       myMotorR->run(BACKWARD);       // rotating the robot in place
       myMotorL->run(FORWARD);
-      myMotorR->setSpeed(80);
-      myMotorL->setSpeed(80);
+      myMotorR->setSpeed(160);
+      myMotorL->setSpeed(160);
       delay(1500);                  // this delay will need to be worked out until roughly 90* is achieved
       myMotorR->setSpeed(0);
       myMotorL->setSpeed(0);
@@ -144,12 +171,12 @@ void GoToRed() {
       delay(1000);
 }
 
+//Go to green from the centre of START when facing south
 void GoToGreen() {
-// take cube to green side
   myMotorR->run(FORWARD);       // rotating the robot in place, slowly, as to not lose the cube
   myMotorL->run(BACKWARD);
-  myMotorR->setSpeed(80);
-  myMotorL->setSpeed(80);
+  myMotorR->setSpeed(160);
+  myMotorL->setSpeed(160);
   delay(1500);                  // this delay will need to be worked out until roughly 90* is achieved
   myMotorR->setSpeed(0);
   myMotorL->setSpeed(0);    
@@ -158,9 +185,9 @@ void GoToGreen() {
 
   myMotorR->run(FORWARD);       // travel forwards to green
   myMotorL->run(FORWARD);
-  myMotorR->setSpeed(100);
-  myMotorL->setSpeed(100);
-  delay(10000);                           // change delay to work out best distance
+  myMotorR->setSpeed(180);
+  myMotorL->setSpeed(180);
+  delay(3000);                           // change delay to work out best distance
   myMotorR->setSpeed(0);
   myMotorL->setSpeed(0);                                      // robot now in center of green area  ------ hopefully...
 
@@ -168,9 +195,9 @@ void GoToGreen() {
 
   myMotorR->run(BACKWARD);
   myMotorL->run(BACKWARD);
-  myMotorR->setSpeed(100);
-  myMotorL->setSpeed(100);
-  delay(10000);                           // change delay to work out best distance
+  myMotorR->setSpeed(180);
+  myMotorL->setSpeed(180);
+  delay(3000);                           // change delay to work out best distance
   myMotorR->setSpeed(0);
   myMotorL->setSpeed(0);                                      // robot now in center of white area  ------ hopefully...
 
@@ -178,8 +205,8 @@ void GoToGreen() {
 
   myMotorR->run(FORWARD);       // roating the robot in place
   myMotorL->run(BACKWARD);
-  myMotorR->setSpeed(80);
-  myMotorL->setSpeed(80);
+  myMotorR->setSpeed(160);
+  myMotorL->setSpeed(160);
   delay(1500);                  // this delay will need to be worked out until roughly 90* is achieved
   myMotorR->setSpeed(0);
   myMotorL->setSpeed(0);
@@ -187,6 +214,7 @@ void GoToGreen() {
   delay(1000);
 }
 
+// Start the main loop
 void loop() {
   //drive forward with line following corrections until junction reached.
   GoToWJunc();
@@ -203,25 +231,14 @@ void loop() {
     InitialMovement();
     LineFollow();                                                                                
  
-    myMotorR->run(FORWARD);       // rotating the robot in place, slowly, as to not lose the cube
-    myMotorL->run(BACKWARD);
-    myMotorR->setSpeed(80);
-    myMotorL->setSpeed(80);
-    delay(3000);                  // this delay will need to be worked out until roughly 180* is achieved
-    myMotorR->setSpeed(0);
-    myMotorL->setSpeed(0);
+    Rotate180();
+
     delay(1000);
     
     InitialMovement();
     LineFollow();
 
-    myMotorR->run(FORWARD);
-    myMotorL->run(FORWARD);
-    myMotorR->setSpeed(100);
-    myMotorL->setSpeed(100);
-    delay(2000);
-    myMotorR->setSpeed(0);
-    myMotorL->setSpeed(0);                                      // robot now in center of white area
+    GoToCentW();
 
 
     if (digitalRead(Magnetsens) == HIGH) {
@@ -249,13 +266,8 @@ void loop() {
     InitialMovement();
     LineFollow();                                                                                 
  
-    myMotorR->run(FORWARD);       // rotating the robot in place, slowly, as to not lose the cube
-    myMotorL->run(BACKWARD);
-    myMotorR->setSpeed(80);
-    myMotorL->setSpeed(80);
-    delay(3000);                  // this delay will need to be worked out until roughly 180* is achieved
-    myMotorR->setSpeed(0);
-    myMotorL->setSpeed(0);
+    Rotate180();
+
     delay(1000);
 
     InitialMovement();
@@ -264,13 +276,7 @@ void loop() {
     InitialMovement();
     LineFollow();                                                          // robot is now back at white zone junction
 
-    myMotorR->run(FORWARD);
-    myMotorL->run(FORWARD);
-    myMotorR->setSpeed(100);
-    myMotorL->setSpeed(100);
-    delay(2000);
-    myMotorR->setSpeed(0);
-    myMotorL->setSpeed(0);                                      // robot now in center of white area
+    GoToCentW();
 
     if (digitalRead(Magnetsens) == HIGH) {
       GoToGreen();
@@ -280,46 +286,12 @@ void loop() {
       GoToRed();
     }
 
-    while (1) {
-
-      myMotorR->run(FORWARD);
-      myMotorL->run(FORWARD);
-      myMotorR->setSpeed(140);
-      myMotorL->setSpeed(140);
-
-      
-      if (digitalRead(LineM) == HIGH) { // this statement checks to see if a junction has been reached - then stops it and ends while loop.
-        myMotorR->setSpeed(0);
-        myMotorL->setSpeed(0);
-        break;
-      }                                             // robot should now be at the white zone junction.
+    GoToWJunc();
 
     }
+
     InitialMovement();
     LineFollow();                                                          // robot is now back at junction F
-  }                              //------------------------------------------------------------------------------------Stage One Complete-------------------------------------------------------------------------
+}                              //------------------------------------------------------------------------------------Stage One Complete-------------------------------------------------------------------------
 
 
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
