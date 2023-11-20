@@ -377,5 +377,10 @@ void loop() {
 
     InitialMovement();
     LineFollow();                                                          // robot is now back at junction F facing north
+
+    InitialMovement();
+    LineFollow();                       // robot is now back at junction E facing north
+
+
 }                              //------------------------------------------------------------------------------------Stage One Complete-------------------------------------------------------------------------
 
