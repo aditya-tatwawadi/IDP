@@ -16,15 +16,15 @@ Adafruit_DCMotor *myMotorL = AFMS.getMotor(2);
 
 // Define all relevant variables
 int USsensor = A0;
-int LineFR = 4; //Far Right Line Sensor
-int LineR = 7;
-int LineL = 8;
-int LineFL = 12; //Far Left Line Sensor
+int LineFR = 9; //Far Right Line Sensor
+int LineR = 8;
+int LineL = 7;
+int LineFL = 4; //Far Left Line Sensor
 int StartButton = 1;
 int LEDG = 1;
 int LEDB = 1;
 int LEDW = 1;
-int Magnetsens = 1; // Hall effect sensor
+int Magnetsens = 11; // Hall effect sensor
 
 void setup() {
   // put your setup code here, to run once:
@@ -52,7 +52,7 @@ void GoToWJunc() {
 
     myMotorR->run(FORWARD);
     myMotorL->run(FORWARD);
-    myMotorR->setSpeed(180);
+    myMotorR->setSpeed(255);
     myMotorL->setSpeed(255);
 
     
@@ -116,20 +116,7 @@ void Rotate180(){
   myMotorL->run(BACKWARD);
   myMotorR->setSpeed(255);
   myMotorL->setSpeed(255);
-  delay(1500);
-
-  /*while(1){
-    myMotorR->run(FORWARD);       // rotating the robot in place, slowly, as to not lose the cube
-    myMotorL->run(BACKWARD);
-    myMotorR->setSpeed(255);
-    myMotorL->setSpeed(255);
-
-    if (digitalRead(LineFR)==HIGH || digitalRead(LineFL)==HIGH){
-      myMotorR->run(RELEASE);
-      myMotorL->run(RELEASE);
-      break;
-    }
-  }
+  delay(500);
 
   while(1){
     myMotorR->run(FORWARD);       // rotating the robot in place, slowly, as to not lose the cube
@@ -142,7 +129,27 @@ void Rotate180(){
       myMotorL->run(RELEASE);
       break;
     }
-  } */
+  }
+
+  myMotorR->run(FORWARD);       // rotating the robot in place, slowly, as to not lose the cube
+  myMotorL->run(BACKWARD);
+  myMotorR->setSpeed(255);
+  myMotorL->setSpeed(255);
+  delay(500);
+
+  while(1){
+    myMotorR->run(FORWARD);       // rotating the robot in place, slowly, as to not lose the cube
+    myMotorL->run(BACKWARD);
+    myMotorR->setSpeed(255);
+    myMotorL->setSpeed(255);
+
+    if (digitalRead(LineFR)==HIGH || digitalRead(LineFL)==HIGH){
+      delay(300);
+      myMotorR->run(RELEASE);
+      myMotorL->run(RELEASE);
+      break;
+    }
+  } 
 }
 
 // Go to white junction to center of the START, pointing south
@@ -164,19 +171,19 @@ void LineFollow() {
     if (digitalRead(LineR) == LOW && digitalRead(LineL) == LOW) { // goes forward
       myMotorR->run(FORWARD);
       myMotorL->run(FORWARD);
-      myMotorR->setSpeed(225);
+      myMotorR->setSpeed(255);
       myMotorL->setSpeed(255);
     }
     if (digitalRead(LineR) == LOW && digitalRead(LineL) == HIGH) { // robot drifts to the right so now correct so it turns a bit to the left
       myMotorR->run(FORWARD);
       myMotorL->run(FORWARD);
-      myMotorR->setSpeed(225);
-      myMotorL->setSpeed(225);
+      myMotorR->setSpeed(255);
+      myMotorL->setSpeed(100);
     }
     if (digitalRead(LineR) == HIGH && digitalRead(LineL) == LOW) { // robot drifts to the left so now correct so it turns a bit to the right
       myMotorR->run(FORWARD);
       myMotorL->run(FORWARD);
-      myMotorR->setSpeed(195);
+      myMotorR->setSpeed(100);
       myMotorL->setSpeed(255);
     }
     if ((digitalRead(LineL) == HIGH && digitalRead(LineR) == HIGH) || ((digitalRead(LineR) == HIGH || digitalRead(LineL) == HIGH) && (digitalRead(LineFL) == HIGH || digitalRead(LineFR) == HIGH))) { // this statement causes the robot to stop when a junction is hit
@@ -206,7 +213,7 @@ void GoToRed() {
       myMotorL->run(BACKWARD);
       myMotorR->setSpeed(255);
       myMotorL->setSpeed(255);
-      delay(890);                  // this delay will need to be worked out until roughly 90* is achieved
+      delay(650);                  // this delay will need to be worked out until roughly 90* is achieved
       myMotorR->setSpeed(0);
       myMotorL->setSpeed(0);
 
@@ -214,9 +221,9 @@ void GoToRed() {
 
       myMotorR->run(FORWARD);
       myMotorL->run(FORWARD);           // travel forwards to red area
-      myMotorR->setSpeed(225);
+      myMotorR->setSpeed(255);
       myMotorL->setSpeed(255);
-      delay(4000);                           // change delay to work out best distance
+      delay(3500);                           // change delay to work out best distance
       myMotorR->setSpeed(0);
       myMotorL->setSpeed(0);                                      // robot now in center of red area  ------ hopefully...
 
@@ -224,9 +231,9 @@ void GoToRed() {
 
       myMotorR->run(BACKWARD);
       myMotorL->run(BACKWARD);
-      myMotorR->setSpeed(225);
+      myMotorR->setSpeed(255);
       myMotorL->setSpeed(255);
-      delay(4000);                           // change delay to work out best distance
+      delay(3500);                           // change delay to work out best distance
       myMotorR->setSpeed(0);
       myMotorL->setSpeed(0);                                      // robot now in center of white area  ------ hopefully...
 
@@ -236,7 +243,7 @@ void GoToRed() {
       myMotorL->run(BACKWARD);
       myMotorR->setSpeed(255);
       myMotorL->setSpeed(255);
-      delay(890);                  // this delay will need to be worked out until roughly 90* is achieved
+      delay(650);                  // this delay will need to be worked out until roughly 90* is achieved
       myMotorR->setSpeed(0);
       myMotorL->setSpeed(0);
 
@@ -249,7 +256,7 @@ void GoToGreen() {
   myMotorL->run(FORWARD);
   myMotorR->setSpeed(255);
   myMotorL->setSpeed(255);
-  delay(890);                  // this delay will need to be worked out until roughly 90* is achieved
+  delay(650);                  // this delay will need to be worked out until roughly 90* is achieved
   myMotorR->setSpeed(0);
   myMotorL->setSpeed(0);    
 
@@ -257,9 +264,9 @@ void GoToGreen() {
 
   myMotorR->run(FORWARD);       // travel forwards to green
   myMotorL->run(FORWARD);
-  myMotorR->setSpeed(225);
+  myMotorR->setSpeed(255);
   myMotorL->setSpeed(255);
-  delay(4000);                           // change delay to work out best distance
+  delay(3500);                           // change delay to work out best distance
   myMotorR->setSpeed(0);
   myMotorL->setSpeed(0);                                      // robot now in center of green area  ------ hopefully...
 
@@ -267,9 +274,9 @@ void GoToGreen() {
 
   myMotorR->run(BACKWARD);
   myMotorL->run(BACKWARD);
-  myMotorR->setSpeed(225);
+  myMotorR->setSpeed(255);
   myMotorL->setSpeed(255);
-  delay(4000);                           // change delay to work out best distance
+  delay(3500);                           // change delay to work out best distance
   myMotorR->setSpeed(0);
   myMotorL->setSpeed(0);                                      // robot now in center of white area  ------ hopefully...
 
@@ -279,7 +286,7 @@ void GoToGreen() {
   myMotorL->run(FORWARD);
   myMotorR->setSpeed(255);
   myMotorL->setSpeed(255);
-  delay(890);                  // this delay will need to be worked out until roughly 90* is achieved
+  delay(650);                  // this delay will need to be worked out until roughly 90* is achieved
   myMotorR->setSpeed(0);
   myMotorL->setSpeed(0);
 
@@ -296,9 +303,9 @@ void loop() {
   TOFsensor.start();
   delay(100);
   BlDist = TOFsensor.getDistance();
-  //if block is within 60cm it must be at next junction
-  if (BlDist <= 60) {
-
+  //if block is within 6cm it must be at next junction
+  if (BlDist <= 400) {
+    //TOFsensor.stop();
     InitialMovement();
     delay(1000); // TO BE DELETED LATER - FOR TESTING
     LineFollow();  
@@ -329,6 +336,7 @@ void loop() {
 
   } //---------------------------------------  robot should have done first block, ready to restart from white zone node --------------------------------------
 
+  //TOFsensor.stop();
   delay(1000);
   InitialMovement();
   LineFollow();                                             
@@ -341,7 +349,9 @@ void loop() {
   delay(100);
   BlDist = TOFsensor.getDistance();
   //if block is within 60cm it must be at next junction
-  if (BlDist <= 60) {
+  if (BlDist <= 600) {
+
+    //TOFsensor.stop();
 
     InitialMovement();
     LineFollow(); 
@@ -373,13 +383,13 @@ void loop() {
 
     GoToWJunc();
 
-    }
+  }
 
-    InitialMovement();
-    LineFollow();                                                          // robot is now back at junction F facing north
+  //TOFsensor.stop();
 
-    InitialMovement();
-    LineFollow();                       // robot is now back at junction E facing north
+  InitialMovement();
+  LineFollow();                                                          // robot is now back at junction F facing north
+
 
 
 }                              //------------------------------------------------------------------------------------Stage One Complete-------------------------------------------------------------------------
