@@ -103,7 +103,7 @@ void Rotate180(){
   myMotorL->run(BACKWARD);
   myMotorR->setSpeed(MRF);
   myMotorL->setSpeed(MLB);
-  delay(500);
+  delay(700);
 
   while(1){
     myMotorR->run(FORWARD);       // rotating the robot in place, slowly, as to not lose the cube
@@ -219,7 +219,7 @@ void InitialMovement() {
 }
 
 // Go to green from the centre of START when facing south
-void GoToGreen) { 
+void GoToGreen() { 
   //Take back to green
   myMotorR->run(FORWARD);       // rotating the robot in place, slowly, as to not lose the cube
   myMotorL->run(BACKWARD);
