@@ -1,5 +1,5 @@
 /*
-Code that 
+Continually checks for button push event after reset/power on. If button pushed, while loop in void runs indefinitely. 
 */
 
 int StartButton = 3; // Connect push button to input pin 3
