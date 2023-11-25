@@ -1,3 +1,4 @@
+//------------------------------------------Arduino Stage 1 code-------------------------------------------------------------------------------------
 // Import relevant libraries
 #include <Adafruit_MotorShield.h>
 #include "Arduino.h"
@@ -21,7 +22,7 @@ int LineFR = 9; //Far Right Line Sensor
 int LineR = 8;
 int LineL = 7;
 int LineFL = 4; //Far Left Line Sensor
-int StartButton = 3;
+int StartButton = 1;
 int LEDG = 1;
 int LEDB = 1;
 int LEDW = 1;
@@ -44,7 +45,6 @@ void setup() {
   // Relevant to TOF sensor:
   Serial.begin(9600);
   Wire.begin();
-  pinMode(StartButton, INPUT); // declare pushbutton as input
   //TOFsensor.begin(0x50);
   //TOFsensor.setMode(TOFsensor.eContinuous,TOFsensor.eHigh);
 
@@ -76,19 +76,6 @@ void setup() {
 // TOFsens = output of the Time Of Flight sensor
 float speed, WaDist, BlDist, USsens, TOFsens;
 int x;
-
-
-// function to check if button has been pushed
-bool checkButtonPress(){
- int val = digitalRead(StartButton); // read input value
- if (val == HIGH) { // check if the input is HIGH
- return true;
- }
- else {
- return false;
-  }
-}
-
 
 // Rotate 90 degrees anticlockwise
 void Rotate90AC() {
@@ -436,30 +423,13 @@ void Stage1() {
     InitialMovement();
     LineFollow(); // Back to F facing North
   }
-  Rotate90AC();
+  Rotate90AC(); //Finish facing west at F
+  //Stage 1 ends with robot at F facing west
 }
 
 // This is to test values for motor speeds only
 void loop() {
-  bool buttonpush;
-  bool pushed;
-  //while loop checks whether button has been pushed until it has been pushed, sets 'pushed' to true if pushed
-  while (buttonpush != true) {
-    buttonpush = checkButtonPress();
-    if (buttonpush == true){
-      pushed = true;
-      break;
-    }
-  }
-  // pushed indicates button has been pushed after reset/power on - run main code inside while loop
-  while (pushed == true) {
-    //INSERT REAL CODE HERE - OTHERWISE, USE THE BELOW AS A TEST TO SEE IF FUNCTION IS WORKING
-    Stage1();
-    exit(0); //Completely terminates the code
-  } 
-  
-  
-  
-
+  Stage1();
+  exit(0); //Completely terminates the code
 
 }
