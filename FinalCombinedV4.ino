@@ -39,10 +39,10 @@ int MRF = 210;
 int MRB = 210;
 
 // Delay variables for turning
-int delay90AC = 300;
-int delay90CW = 300;
-int delay180_1 = 300;
-int delay180_2 = 300;
+int delay90AC = 700;
+int delay90CW = 700;
+int delay180_1 = 700;
+int delay180_2 = 700;
 
 
 // Defining what all the relevant variables mean
